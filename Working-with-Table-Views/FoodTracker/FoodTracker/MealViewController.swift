@@ -20,7 +20,17 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
     @IBOutlet weak var ratingControl: RatingControl!
     @IBOutlet weak var saveButton: UIBarButtonItem!
     @IBAction func cancel(_ sender: UIBarButtonItem) {
-        dismiss(animated: true, completion: nil)
+        // Depending on style of presentation (modal or push presentation), this view controller need to be dismissed in two different ways.
+        let isPresentingInAddMealMode: Bool = presentingViewController is UINavigationController
+        if isPresentingInAddMealMode {
+            print("UINavigationController")
+            dismiss(animated: true, completion: nil)
+        } else if let owningNavigationController = navigationController {
+            print("navigationController is true")
+            owningNavigationController.popViewController(animated: true)
+        } else {
+            fatalError("The MealViewController is not inside a navigation controller.")
+        }
     }
     var meal: Meal?
     
@@ -32,6 +42,16 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
         // Handle the text field’s user input through delegate callbacks.
         nameTextField.delegate = self
         descriptionTextField.delegate = self
+        
+        // Set up views if editing an existing Meal.
+        if let meal = meal {
+            navigationItem.title = meal.name
+            nameTextField.text = meal.name
+            photoImageView.image = meal.photo
+            ratingControl.rating = meal.rating
+        }
+        
+        updateSaveButtonState()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -45,12 +65,12 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
     
     //MARK: UITextFieldDelegate
     func textFieldDidEndEditing(_ textField: UITextField) {
-        if textField.text != "" {
-            if textField == nameTextField {
-                mealNameLabel.text = textField.text
-            } else if textField == descriptionTextField {
-                descriptionLabel.text = textField.text
-            }
+        if textField == nameTextField {
+            mealNameLabel.text = textField.text
+            navigationItem.title = textField.text
+            updateSaveButtonState()
+        } else if textField == descriptionTextField {
+            descriptionLabel.text = textField.text
         }
     }
     
@@ -60,7 +80,12 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
         textField.resignFirstResponder()
         return true
     }
-
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        // Disable the save button while editing
+        updateSaveButtonState()
+    }
+    
     // MARK: Actions
     @IBAction func setDefaultLabelText(_ sender: UIButton) {
         mealNameLabel.text = "Default Text"
@@ -123,6 +148,13 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
         
         // Dismiss the picker.
         dismiss(animated: true, completion: nil)
+    }
+    
+    //MARK: Private Methods
+    private func updateSaveButtonState() {
+        // Disable the Save button if the text field is empty.
+        let text = nameTextField.text ?? ""
+        saveButton.isEnabled = !text.isEmpty
     }
 }
 

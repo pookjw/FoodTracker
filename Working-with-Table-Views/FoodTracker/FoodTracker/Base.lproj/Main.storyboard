@@ -44,6 +44,7 @@
                                     <outlet property="nameLabel" destination="1g7-L8-tkO" id="CDj-gg-aGf"/>
                                     <outlet property="photoImageView" destination="OEJ-sc-mLw" id="VHv-cr-uKj"/>
                                     <outlet property="ratingControl" destination="qxk-tv-bkT" id="zmw-W1-q9R"/>
+                                    <segue destination="BYZ-38-t0r" kind="show" identifier="ShowDetail" id="pea-rz-kIi"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -55,7 +56,7 @@
                     <navigationItem key="navigationItem" title="Your Meals" id="Pbj-kV-ytM">
                         <barButtonItem key="rightBarButtonItem" style="plain" systemItem="add" id="yhn-yU-k2K">
                             <connections>
-                                <segue destination="Bd4-Un-2S6" kind="showDetail" id="wpm-Kd-WgJ"/>
+                                <segue destination="Bd4-Un-2S6" kind="showDetail" identifier="AddItem" id="wpm-Kd-WgJ"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -216,6 +217,9 @@
             <point key="canvasLocation" x="710.14492753623199" y="113.83928571428571"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="pea-rz-kIi"/>
+    </inferredMetricsTieBreakers>
     <resources>
         <image name="defaultPhoto" width="540" height="540"/>
     </resources>
